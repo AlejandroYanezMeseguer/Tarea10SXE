@@ -1,0 +1,29 @@
+version: '3.1'  # Se especifica la versión de Docker Compose a utilizar, en este caso la versión 3.1
+
+services:  # Definición de los servicios (contenedores) que serán ejecutados
+
+  web:  # El servicio 'web' representa la aplicación Odoo
+    image: odoo:17.0  # Se utiliza la imagen oficial de Odoo versión 17.0 desde Docker Hub
+    depends_on:  # Define dependencias entre los servicios
+      - db  # Odoo depende de la base de datos 'db' para funcionar correctamente
+    ports:
+      - "8069:8069"  # Expone el puerto 8069 del contenedor en el puerto 8069 del host, que es el puerto por defecto de Odoo
+
+  db:  # El servicio 'db' representa la base de datos PostgreSQL
+    image: postgres:15  # Se utiliza la imagen oficial de PostgreSQL versión 15 desde Docker Hub
+    ports:
+      - "5432:5432"
+    environment:  # Variables de entorno que se pasan al contenedor de la base de datos
+      - POSTGRES_DB=postgres  # Nombre de la base de datos por defecto
+      - POSTGRES_PASSWORD=odoo  # Contraseña para el usuario 'postgres'
+      - POSTGRES_USER=odoo  # Usuario de la base de datos
+  pgadmin: # servicio de pgadmin
+    image: dpage/pgadmin4 # imagen de pgadmin
+    restart: always # siempre reiniciar en caso de error
+    ports: # puertos
+      - "8081:80"
+    environment: # variables de entorno
+      PGADMIN_DEFAULT_EMAIL: ayanezmeseguer@danielcastelao.org # email de pgadmin
+      PGADMIN_DEFAULT_PASSWORD: 1234 # contraseña de pgadmin
+    depends_on: # dependencias
+      - db
